@@ -1,0 +1,16 @@
+/target
+/build.log
+/.cargo-home
+/gen/schemas
+
+# 打包产物（tauri.conf.json 的 frontendDist 指向 ui/，dist/ 仅是构建输出）
+/dist
+
+# 环境变量与密钥文件（防止误提交本地敏感配置）
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx

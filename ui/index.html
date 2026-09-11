@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>剪贴板历史</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="header">
+    <div class="brand">
+      <div class="logo" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
+             stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2" />
+          <rect x="9" y="3" width="6" height="4" rx="1" />
+          <path d="M9 12h6M9 16h4" />
+        </svg>
+      </div>
+      <div class="titles">
+        <h1>剪贴板历史</h1>
+        <span id="count" class="count">0 条记录</span>
+      </div>
+    </div>
+
+    <div class="controls">
+      <div class="listen">
+        <span class="dot" id="statusDot"></span>
+        <span id="statusText">监听中</span>
+        <label class="switch" title="开启 / 暂停监听">
+          <input type="checkbox" id="listeningToggle" checked />
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div class="actions">
+        <button id="copyAllBtn" class="btn" title="把全部历史记录按行（每条一行）合并复制到剪贴板">全部复制</button>
+        <button id="clearBtn" class="btn" title="清空全部历史">清空</button>
+      </div>
+    </div>
+
+    <div class="search-row">
+      <input id="search" type="search" placeholder="搜索历史记录… (Ctrl+F)" autocomplete="off" spellcheck="false" />
+      <button id="searchClear" class="btn ghost" hidden title="清除搜索">✕</button>
+    </div>
+  </header>
+
+  <main id="list" class="list"></main>
+
+  <footer class="footer">
+    自动追加新记录到列表底部 · 点击记录即可重新复制 · 关闭窗口后驻留托盘继续监听
+  </footer>
+
+  <div id="toast" class="toast" hidden></div>
+
+  <script src="main.js"></script>
+</body>
+</html>
