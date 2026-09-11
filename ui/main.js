@@ -32,6 +32,17 @@ let toastTimer = null;
 let clearArmed = false;
 let clearTimer = null;
 
+/** 图标取自 index.html 中的 SVG 雪碧图（动物岛风格内置图标） */
+function icon(id, cls) {
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('class', cls);
+  svg.setAttribute('aria-hidden', 'true');
+  const use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
+  use.setAttribute('href', '#' + id);
+  svg.appendChild(use);
+  return svg;
+}
+
 function fmtTime(ts) {
   if (!ts) return '';
   const d = new Date(ts * 1000);
@@ -50,7 +61,8 @@ function setStatus(listening) {
 }
 
 function showToast(msg) {
-  toastEl.textContent = msg;
+  toastEl.textContent = '';
+  toastEl.append(icon('ico-check', 'toast-ico'), document.createTextNode(msg));
   toastEl.hidden = false;
   toastEl.classList.add('show');
   clearTimeout(toastTimer);
@@ -75,9 +87,12 @@ function render(opts = {}) {
   if (shown.length === 0) {
     const empty = document.createElement('div');
     empty.className = 'empty';
-    empty.textContent = q
-      ? '没有匹配的记录'
-      : '暂无历史记录\n复制任意文本，就会自动记录在这里';
+    empty.append(
+      icon('ico-file', 'empty-ico'),
+      document.createTextNode(q
+        ? '没有匹配的记录'
+        : '暂无历史记录\n复制任意文本，就会自动记录在这里'),
+    );
     listEl.appendChild(empty);
     return;
   }
@@ -100,7 +115,7 @@ function render(opts = {}) {
 
     const hint = document.createElement('div');
     hint.className = 'entry-copy';
-    hint.textContent = '复制';
+    hint.append(icon('ico-check', 'entry-copy-ico'), document.createTextNode('复制'));
 
     div.append(time, text, hint);
     div.addEventListener('click', () => copyEntry(e.text, div));

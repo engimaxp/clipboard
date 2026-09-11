@@ -17,6 +17,17 @@
 - 驻留托盘：关闭窗口后最小化到系统托盘继续监听，托盘右键可退出
 - 单实例：重复启动会唤出已有窗口，避免两个监听进程重复记录
 
+## 界面风格
+
+界面采用 [animal-island-ui](https://github.com/guokaigdg/animal-island-ui)（动物岛风）设计语言：
+暖色羊皮纸底、大地棕文字、薄荷青主色，胶囊按钮 + 3D 像素堆叠阴影，圆角 Nunito / Noto Sans SC 字体。
+
+- 本项目的 UI 是**无构建步骤的纯 HTML/CSS/JS**，因此按该库的设计令牌（`docs/design-system/`）
+  在 `ui/styles.css` 中以 `--animal-*` CSS 变量**重新实现**了这套视觉风格，未引入 React 与任何运行时依赖
+- 结构与交互逻辑保持不变：仍是「头部（标题 / 监听开关 / 全部复制 / 清空）+ 搜索框 + 记录列表 + 底部提示 + Toast」
+- 图标为按该库图标规范（圆润描边、暖色填充）内联的 SVG，见 `ui/index.html` 顶部雪碧图
+- animal-island-ui 采用 CC BY-NC 4.0（仅限非商业使用）许可，仅借鉴其设计规范，未复制其代码
+
 ## 运行
 
 ```bash

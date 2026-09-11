@@ -4,18 +4,73 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>剪贴板历史</title>
+
+  <!-- 字体：离线时自动回退到系统圆体（PingFang SC / 微软雅黑） -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=Noto+Sans+SC:wght@400;500;700&display=swap" />
+
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+  <!-- 内置图标：动物岛风格（圆润描边 3.5 + 圆角端点），仅装饰/图标位，不参与逻辑 -->
+  <svg class="animal-sprite" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <!-- 剪贴板（线性，跟随文字色） -->
+      <symbol id="ico-clipboard" viewBox="0 0 48 48" fill="none" stroke="currentColor"
+              stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M14 8 L34 8 L34 42 L14 42 Z" />
+        <path d="M19 5 L29 5 L29 12 L19 12 Z" />
+        <path d="M19 21 L29 21" stroke-width="2.5" />
+        <path d="M19 28 L31 28" stroke-width="2.5" />
+        <path d="M19 35 L25 35" stroke-width="2.5" />
+      </symbol>
+
+      <!-- 搜索 -->
+      <symbol id="ico-search" viewBox="0 0 48 48" fill="none" stroke="currentColor"
+              stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="21" cy="21" r="13" />
+        <path d="M31 31 L41 41" stroke-width="4.5" />
+      </symbol>
+
+      <!-- 关闭 / 清除 -->
+      <symbol id="ico-close" viewBox="0 0 48 48" fill="none" stroke="currentColor"
+              stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="24" cy="24" r="17" />
+        <path d="M17 17 L31 31" stroke-width="4" />
+        <path d="M31 17 L17 31" stroke-width="4" />
+      </symbol>
+
+      <!-- 打勾（实心，用于已复制反馈） -->
+      <symbol id="ico-check" viewBox="0 0 48 48" fill="none" stroke="currentColor"
+              stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="24" cy="24" r="17" fill="currentColor" stroke="none" />
+        <path d="M15 24 L21.5 31 L34 17" stroke="#FFFFFF" stroke-width="4.5" fill="none" />
+      </symbol>
+
+      <!-- 文件（空状态） -->
+      <symbol id="ico-file" viewBox="0 0 48 48" fill="none" stroke="currentColor"
+              stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 6 L12 42 L36 42 L36 18 L24 6 Z" fill="#FFFFFF" />
+        <path d="M24 6 L24 18 L36 18" />
+        <path d="M16 26 L32 26" stroke-width="2.5" />
+        <path d="M16 32 L28 32" stroke-width="2.5" />
+      </symbol>
+
+      <!-- 叶子（页脚装饰） -->
+      <symbol id="ico-leaf" viewBox="0 0 48 48" fill="none" stroke="currentColor"
+              stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M8 40 C 8 18 24 6 40 8 C 40 24 26 40 8 40 Z" fill="#86d67a" />
+        <path d="M8 40 L40 8" stroke-width="2.5" />
+      </symbol>
+    </defs>
+  </svg>
+
   <header class="header">
     <div class="brand">
       <div class="logo" aria-hidden="true">
-        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
-             stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2" />
-          <rect x="9" y="3" width="6" height="4" rx="1" />
-          <path d="M9 12h6M9 16h4" />
-        </svg>
+        <svg class="logo-ico"><use href="#ico-clipboard" /></svg>
       </div>
       <div class="titles">
         <h1>剪贴板历史</h1>
@@ -25,29 +80,36 @@
 
     <div class="controls">
       <div class="listen">
-        <span class="dot" id="statusDot"></span>
         <span id="statusText">监听中</span>
-        <label class="switch" title="开启 / 暂停监听">
+        <label class="switch" id="switchLabel" title="开启 / 暂停监听">
           <input type="checkbox" id="listeningToggle" checked />
-          <span class="slider"></span>
+          <span class="slider">
+            <span class="knob" aria-hidden="true"><span id="statusDot" class="dot"></span></span>
+          </span>
         </label>
       </div>
       <div class="actions">
         <button id="copyAllBtn" class="btn" title="把全部历史记录按行（每条一行）合并复制到剪贴板">全部复制</button>
-        <button id="clearBtn" class="btn" title="清空全部历史">清空</button>
+        <button id="clearBtn" class="btn danger-primary" title="清空全部历史">清空</button>
       </div>
     </div>
 
     <div class="search-row">
-      <input id="search" type="search" placeholder="搜索历史记录… (Ctrl+F)" autocomplete="off" spellcheck="false" />
-      <button id="searchClear" class="btn ghost" hidden title="清除搜索">✕</button>
+      <span class="field">
+        <svg class="field-ico" aria-hidden="true"><use href="#ico-search" /></svg>
+        <input id="search" type="search" placeholder="搜索历史记录… (Ctrl+F)" autocomplete="off" spellcheck="false" />
+        <button id="searchClear" class="field-clear" hidden title="清除搜索">
+          <svg class="field-clear-ico" aria-hidden="true"><use href="#ico-close" /></svg>
+        </button>
+      </span>
     </div>
   </header>
 
   <main id="list" class="list"></main>
 
   <footer class="footer">
-    自动追加新记录到列表底部 · 点击记录即可重新复制 · 关闭窗口后驻留托盘继续监听
+    <svg class="footer-leaf" aria-hidden="true"><use href="#ico-leaf" /></svg>
+    <span class="footer-text">自动追加新记录到列表底部 · 点击记录即可重新复制 · 关闭窗口后驻留托盘继续监听</span>
   </footer>
 
   <div id="toast" class="toast" hidden></div>
